@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clash of Clans Clan Members</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #333;
+      color: #fff;
+      padding: 1em 0;
+      text-align: center;
+    }
+
+    main {
+      padding: 2em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2em 0;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Our Clan</h1>
+  </header>
+  <main>
+    <section>
+      <h2>Clan Members</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Member Name</th>
+            <th>Town Hall Level</th>
+            <th>Player Tag</th>
+          </tr>
+        </thead>
+        <tbody id="clan-members">
+          <!-- Clan members will be inserted here by JavaScript -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+  <script>
+    function getClanTagFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('clanTag');
+    }
+
+    async function fetchClanMembers(clanTag) {
+      const apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImY2ODk0YWQwLWMxMWEtNGZkOS04Yzk0LTc0MzFiYzQ3OGJhNiIsImlhdCI6MTcxNjIxNzg5NSwic3ViIjoiZGV2ZWxvcGVyL2I1ZTQzNTRiLWU2OWEtMTI3Ny05NGI3LWI2YTYyMzA3ODA2MCIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjQ5LjM3LjI0OS4xNDIiLCIzNS4xODcuMTQzLjcwIiwiMTU3LjQ1LjIzMC45NCIsIjE4LjIxNS4xNDMuMjQ4Il0sInR5cGUiOiJjbGllbnQifV19.9h84g_YtJLJTLVl-4xO80pgLWNY2YkCCLmiQ5KXZTWFf0wt5W_u6TWl8HFIW7e7cgtBa2RS3VNYCpyUj0-qHfg'; // Replace with your Clash of Clans API key
+      const url = `https://api.clashofclans.com/v1/clans/${encodeURIComponent(clanTag)}/members`;
+
+      try {
+        const response = await fetch(url, {
+          headers: {
+            'Authorization': `Bearer ${apiKey}`
+          }
+        });
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+        const data = await response.json();
+        const members = data.items;
+        const membersTable = document.getElementById('clan-members');
+
+        members.forEach(member => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${member.name}</td>
+            <td>${member.townHallLevel}</td>
+            <td>${member.tag}</td>
+          `;
+          membersTable.appendChild(row);
+        });
+      } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const clanTag = getClanTagFromURL();
+      if (clanTag) {
+        fetchClanMembers(clanTag);
+      } else {
+        alert('Clan tag is missing from the URL');
+      }
+    });
+  </script>
+</body>
+</html>
