@@ -72,10 +72,11 @@
 
     async function fetchClanMembers(clanTag) {
       const apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImY2ODk0YWQwLWMxMWEtNGZkOS04Yzk0LTc0MzFiYzQ3OGJhNiIsImlhdCI6MTcxNjIxNzg5NSwic3ViIjoiZGV2ZWxvcGVyL2I1ZTQzNTRiLWU2OWEtMTI3Ny05NGI3LWI2YTYyMzA3ODA2MCIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjQ5LjM3LjI0OS4xNDIiLCIzNS4xODcuMTQzLjcwIiwiMTU3LjQ1LjIzMC45NCIsIjE4LjIxNS4xNDMuMjQ4Il0sInR5cGUiOiJjbGllbnQifV19.9h84g_YtJLJTLVl-4xO80pgLWNY2YkCCLmiQ5KXZTWFf0wt5W_u6TWl8HFIW7e7cgtBa2RS3VNYCpyUj0-qHfg'; // Replace with your Clash of Clans API key
-      const url = `https://api.clashofclans.com/v1/clans/%23${clanTag}/members`;
+      const apiUrl = `https://api.clashofclans.com/v1/clans/${encodeURIComponent(clanTag)}/members`;
+      const proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // Using CORS proxy
 
       try {
-        const response = await fetch(url, {
+        const response = await fetch(proxyUrl + apiUrl, {
           headers: {
             'Authorization': `Bearer ${apiKey}`
           }
@@ -84,6 +85,7 @@
           throw new Error('Network response was not ok ' + response.statusText);
         }
         const data = await response.json();
+        console.log(data); // Debugging line to check if data is being fetched
         const members = data.items;
         const membersTable = document.getElementById('clan-members');
 
